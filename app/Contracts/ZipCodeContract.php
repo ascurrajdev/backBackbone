@@ -25,7 +25,7 @@ class ZipCodeContract {
     public function getDataOfZipCodeAndDecode($zipCode){
         $fileReader = fopen(storage_path("app/zipcodes.txt"),"r");
         $zipCodes = [];
-        $headers = config("zipcodes.headers");
+        $headers = cache("zipcodes.headers",[]);
         $positions = $this->getPositionsOfZipCode($zipCode);
         foreach($positions as $numberPointer){
             fseek($fileReader,$numberPointer);

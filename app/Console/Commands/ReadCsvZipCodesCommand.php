@@ -37,7 +37,7 @@ class ReadCsvZipCodesCommand extends Command
             foreach($arrayLine as $key => $value){
                 $arrayLine[$key] = trim($value);
             }
-            config([
+            cache([
                 "zipcodes.headers" => $arrayLine
             ]);
             fclose($fileReader);
@@ -58,7 +58,7 @@ class ReadCsvZipCodesCommand extends Command
                 foreach($arrayLine as $key => $value){
                     $arrayLine[$key] = trim($value);
                 }
-                config([
+                cache([
                     "zipcodes.headers" => $arrayLine
                 ]);
             }
