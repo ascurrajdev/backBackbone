@@ -9,9 +9,10 @@ use Illuminate\Http\Request;
 class ZipCodesController extends Controller
 {
     public function show($zipCode){
-        if(!ZipCode::exists($zipCode)){
+        $result = ZipCode::getDataAndMapPrettyByZipCode($zipCode);
+        if(empty($result)){
             abort(404);
         }
-        return ZipCode::getDataAndMapPrettyByZipCode($zipCode);
+        return $result;
     }
 }

@@ -1,15 +1,33 @@
 <?php
 namespace App\Contracts;
+use Illuminate\Support\Facades\Cache;
 
 class ZipCodeContract {
-    public function exists($zipCode){
-        return !empty(config("zipcodes.{$zipCode}",[]));
+    private function getPositionsOfZipCode($zipCode): array {
+        $positions = [];
+        if(Cache::store('octane')->has($zipCode)){
+            return Cache::store('octane')->get($zipCode);
+        }
+        $pathZipCodesOnly = storage_path("app/zipcodesOnly.txt");
+        $currentPosition = binarySearchInFile($pathZipCodesOnly,$zipCode,17);
+        if($currentPosition == -1){
+            return $positions;
+        }
+        $positions[] = $currentPosition["value"][1];
+        $positionsAround = secuencialSearchInFile($pathZipCodesOnly,$zipCode,$currentPosition["position"]);
+        foreach($positionsAround as $value){
+            $positions[] = $value[1];
+        }
+        Cache::store("octane")->put($zipCode,$positions, now()->addMinutes(5));
+        return $positions;
     }
+
     public function getDataOfZipCodeAndDecode($zipCode){
         $fileReader = fopen(storage_path("app/zipcodes.txt"),"r");
         $zipCodes = [];
         $headers = config("zipcodes.headers");
-        foreach(config("zipcodes.{$zipCode}",[]) as $numberPointer){
+        $positions = $this->getPositionsOfZipCode($zipCode);
+        foreach($positions as $numberPointer){
             fseek($fileReader,$numberPointer);
             $values = explode("|",fgets($fileReader));
             $dataset = [];
@@ -23,6 +41,9 @@ class ZipCodeContract {
 
     public function getDataAndMapPrettyByZipCode($zipCode){
         $datasets = $this->getDataOfZipCodeAndDecode($zipCode);
+        if(empty($datasets)){
+            return $datasets;
+        }
         $response = [
             "zip_code" => $zipCode,
             "locality" => $datasets[0]["d_ciudad"],

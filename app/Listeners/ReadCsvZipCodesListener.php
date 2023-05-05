@@ -23,7 +23,23 @@ class ReadCsvZipCodesListener
     public function handle(object $event): void
     {
         $path = Storage::path("zipcodes.txt");
+        $pathSaveOnlyZipCodes = storage_path("app/zipcodesOnly.txt");
+        $existsFileZipCodes = true;
         $fileReader = fopen($path, "r");
+        if(file_exists($pathSaveOnlyZipCodes)){
+            fgets($fileReader);
+            $line = fgets($fileReader);
+            $arrayLine = explode("|",$line);
+            foreach($arrayLine as $key => $value){
+                $arrayLine[$key] = trim($value);
+            }
+            config([
+                "zipcodes.headers" => $arrayLine
+            ]);
+            fclose($fileReader);
+            return ;
+        }
+        $fileWriterZipCodes = fopen($pathSaveOnlyZipCodes,"w");
         $linesCount = 0;
         while(!feof($fileReader)){
             $position = ftell($fileReader);
@@ -31,16 +47,8 @@ class ReadCsvZipCodesListener
             $arrayLine = explode("|",$line);
             if($linesCount >= 2){
                 $zipCode = $arrayLine[0];
-                if(empty(config("zipcodes.{$zipCode}"))){
-                    config([
-                        "zipcodes.{$zipCode}" => [ $position ]
-                    ]);
-                }else{
-                    $values = config("zipcodes.{$zipCode}");
-                    $values[] = $position;
-                    config([
-                        "zipcodes.{$zipCode}" => $values
-                    ]);
+                if(!empty($zipCode)){
+                    fwrite($fileWriterZipCodes,$zipCode.",".str_pad($position,10,"0",STR_PAD_LEFT).PHP_EOL);
                 }
             }else if($linesCount == 1){
                 foreach($arrayLine as $key => $value){
@@ -53,6 +61,7 @@ class ReadCsvZipCodesListener
             $linesCount++;
         }
         fclose($fileReader);
+        fclose($fileWriterZipCodes);
         Log::info("Ya se ha almacenado la configuracion de los codigos postales");
 
     }
