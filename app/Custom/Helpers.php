@@ -32,26 +32,22 @@ if(!function_exists("binarySearchInFile")){
 if(!function_exists("secuencialSearchInFile")){
     function secuencialSearchInFile($file, $searchValue, $fromPosition,$mode = 1,$readLines = 7, $lineLength = 17){
         $fileReader = fopen($file,'r');
-        $count = $mode == 1 ? $readLines : $readLines * -1;
+        $count = $mode == 1 ? 0 : $readLines * -1;
         $datasets = [];
         $currentPosition = ($fromPosition + ($lineLength * $count));
         if($currentPosition < 0){
             return [];
         }
+        $end = $mode == 1 ? $readLines : 0;
         fseek($fileReader,$currentPosition);
-        while(!feof($fileReader) && $count != 0){
+        while(!feof($fileReader) && $count != $end){
             if(empty($dataLine = fgetcsv($fileReader))){
                 break;
             }
             if($dataLine[0] == $searchValue){
                 $datasets[] = $dataLine;
             }
-            if($mode == 1){
-                $count--;
-            }
-            if($mode == 2){
-                $count++;
-            }
+            $count++;
         }
         fclose($fileReader);
         return $datasets;
