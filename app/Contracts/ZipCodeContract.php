@@ -5,8 +5,8 @@ use Illuminate\Support\Facades\Cache;
 class ZipCodeContract {
     private function getPositionsOfZipCode($zipCode): array {
         $positions = [];
-        if(Cache::store('octane')->has($zipCode)){
-            return Cache::store('octane')->get($zipCode);
+        if(Cache::has($zipCode)){
+            return Cache::get($zipCode);
         }
         $pathZipCodesOnly = storage_path("app/zipcodesOnly.txt");
         $currentPosition = binarySearchInFile($pathZipCodesOnly,$zipCode,17);
@@ -18,7 +18,7 @@ class ZipCodeContract {
         foreach($positionsAround as $value){
             $positions[] = $value[1];
         }
-        Cache::store("octane")->put($zipCode,$positions, now()->addMinutes(5));
+        Cache::put($zipCode,$positions, now()->addMinutes(5));
         return $positions;
     }
 
