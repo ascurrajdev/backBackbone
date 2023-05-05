@@ -30,19 +30,6 @@ class ReadCsvZipCodesCommand extends Command
         $path = Storage::path("zipcodes.txt");
         $pathSaveOnlyZipCodes = storage_path("app/zipcodesOnly.txt");
         $fileReader = fopen($path, "r");
-        if(file_exists($pathSaveOnlyZipCodes)){
-            fgets($fileReader);
-            $line = fgets($fileReader);
-            $arrayLine = explode("|",$line);
-            foreach($arrayLine as $key => $value){
-                $arrayLine[$key] = trim($value);
-            }
-            cache([
-                "zipcodes.headers" => $arrayLine
-            ]);
-            fclose($fileReader);
-            return ;
-        }
         $fileWriterZipCodes = fopen($pathSaveOnlyZipCodes,"w");
         $linesCount = 0;
         while(!feof($fileReader)){
