@@ -13,24 +13,21 @@ La API replica la funcionalidad de la siguiente API:
 
 Esta API tiene como su base de datos exclusivamente archivos txt donde obtiene los datos,
 para que el acceso sea lo mas rapido posible he almacenado en un archivo adicional el codigo postal seguido con la posicion en bytes del archivo donde se encuentran todos los codigos postales.
-Para generar ese archivo que indexa las ubicaciones se ejecuta ` php artisan zip-codes:readcsv`
+Para generar ese archivo que indexa las ubicaciones se ejecuta ` php artisan zip-codes:readcsv `, una vez generado el archivo se puede utilizar la aplicacion.
+
+Para que la obtencion del codigo postal he utilizado un algoritmo con busqueda binaria, seguido de dos busquedas secuenciales tanto arriba como abajo partiendo de la posicion encontrada en la busqueda binaria, una vez obtenido esas posiciones almaceno en la cache, para que en la proxima peticion solo obtenga las posiciones y listo asi no hace la busqueda y solo mapea los datos
+
+Por si no fuera poco
 
 ## Funcionalidad del proyecto
 
 - Recibir un código postal (Mexico) y en base a este entregar los datos correspondientes del mismo
-- Importar los datos del Excel a la base de datos mediante un endpoint.
-- Importar los datos del Excel a la base de datos mediante un comando artisan.
 
 ## Endpoints y comando
 
 Los endpoints disponibles son:
 
 -/api/zip-codes/{zip_code} (endpoint principal)
--/api/import (carga el archivo excel)
-
-El comando para cargar el archivo excel es el siguiente
-
-- php artisan import:codes
 
 ## Ejemplo de respuesta
 
