@@ -23,6 +23,7 @@ class ZipCodeContract {
             $positions[] = intval($value[1]);
         }
         $positions = array_unique($positions);
+        sort($positions);
         Cache::put($zipCode,$positions, now()->addMinutes(5));
         return $positions;
     }
