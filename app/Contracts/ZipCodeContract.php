@@ -13,11 +13,16 @@ class ZipCodeContract {
         if($currentPosition == -1){
             return $positions;
         }
-        $positions[] = $currentPosition["value"][1];
-        $positionsAround = secuencialSearchInFile($pathZipCodesOnly,$zipCode,$currentPosition["position"]);
+        $positions[] = intval($currentPosition["value"][1]);
+        $positionsAround = secuencialSearchInFile($pathZipCodesOnly,$zipCode,intval($currentPosition["position"]));
         foreach($positionsAround as $value){
-            $positions[] = $value[1];
+            $positions[] = intval($value[1]);
         }
+        $positionsAround = secuencialSearchInFile($pathZipCodesOnly,$zipCode,intval($currentPosition["position"]),2);
+        foreach($positionsAround as $value){
+            $positions[] = intval($value[1]);
+        }
+        $positions = array_unique($positions);
         Cache::put($zipCode,$positions, now()->addMinutes(5));
         return $positions;
     }
