@@ -34,8 +34,12 @@ if(!function_exists("secuencialSearchInFile")){
         $fileReader = fopen($file,'r');
         $count = $mode == 1 ? $readLines : $readLines * -1;
         $datasets = [];
-        fseek($fileReader,($fromPosition + ($lineLength * $count)));
-        while(!feof($fileReader) || $count != 0){
+        $currentPosition = ($fromPosition + ($lineLength * $count));
+        if($currentPosition < 0){
+            return [];
+        }
+        fseek($fileReader,$currentPosition);
+        while(!feof($fileReader) && $count != 0){
             if(empty($dataLine = fgetcsv($fileReader))){
                 break;
             }
