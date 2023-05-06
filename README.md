@@ -15,9 +15,9 @@ Esta API tiene como su base de datos exclusivamente archivos txt donde obtiene l
 para que el acceso sea lo mas rapido posible he almacenado en un archivo adicional el codigo postal seguido con la posicion en bytes del archivo donde se encuentran todos los codigos postales.
 Para generar ese archivo que indexa las ubicaciones se ejecuta ` php artisan zip-codes:readcsv `, una vez generado el archivo se puede utilizar la aplicacion.
 
-Para que la obtencion del codigo postal he utilizado un algoritmo con busqueda binaria, seguido de dos busquedas secuenciales tanto arriba como abajo partiendo de la posicion encontrada en la busqueda binaria, una vez obtenido esas posiciones almaceno en la cache, para que en la proxima peticion solo obtenga las posiciones y listo asi no hace la busqueda y solo mapea los datos
+Para que la obtencion del codigo postal tiene implementado un algoritmo con busqueda binaria, seguido de dos busquedas secuenciales tanto arriba como abajo partiendo de la posicion encontrada en la busqueda binaria, una vez obtenido esas posiciones se almacenan en la cache, para que en la proxima peticion solo obtenga las posiciones y mapea los datos
 
-Por si no fuera poco el endpoint utiliza balanceo de carga con dos servidores en las siguientes ubicaciones, eso es pensando para este caso ya que la empresa es internacional, por lo que hay usuarios en toda america: 
+Tambien el endpoint utiliza balanceo de carga con dos servidores en las siguientes ubicaciones, eso es pensando para este caso ya que la empresa es internacional, por lo que hay usuarios en toda america: 
 - Santiago de Chile
 - Dallas (Texas)
 
